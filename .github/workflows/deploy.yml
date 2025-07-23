@@ -37,7 +37,7 @@ jobs:
 
       # 4. application-dev.yml에 GitHub Secrets 주입 (MySQL 연결 정보)
       - name: Inject secrets into application-dev.yml
-        uses: microsoft/variable-substitution@v1
+        uses: cschleiden/replace-tokens@v1
         with:
           files: ${{ env.RESOURCE_PATH }}
         env:
