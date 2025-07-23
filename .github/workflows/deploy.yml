@@ -1,0 +1,81 @@
+name: Build and Deploy to EC2
+
+on:
+  push:
+    branches: [ "main" ]  # main 브랜치 푸시 시 실행
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ap-northeast-2
+  S3_BUCKET_NAME: itpick-cicd-bucket
+  PROJECT_NAME: toock-backend
+  CODE_DEPLOY_APPLICATION_NAME: toock-code-deploy
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: toock-server
+  RESOURCE_PATH: ./src/main/resources/application-dev.yml  # Dev 환경 설정 파일만 주입 대상
+
+jobs:
+  build-project:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      # 1. 저장소 체크아웃
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. JDK 17 설정 (Temurin)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 3. Gradle 실행 권한 부여
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      # 4. application-dev.yml에 GitHub Secrets 주입 (MySQL 연결 정보)
+      - name: Inject secrets into application-dev.yml
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ${{ env.RESOURCE_PATH }}
+        env:
+          DATASOURCE_URL: ${{ secrets.DATASOURCE_URL }}
+          DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
+          DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
+
+      # 5. Gradle 빌드 (테스트 제외, 캐시 사용)
+      - name: Build with Gradle
+        uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5
+        with:
+          arguments: clean build -x test
+
+      # 6. ZIP 파일 생성 (커밋 해시로 파일명 지정)
+      - name: Make zip file
+        run: zip -qq -r ./$GITHUB_SHA.zip .
+
+      # 7. AWS 인증 (Secrets 이용)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # 8. S3 버킷에 업로드
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+
+      # 9. AWS CodeDeploy로 배포
+      - name: Deploy with AWS CodeDeploy
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+            --s3-location bucket=${{ env.S3_BUCKET_NAME }},key=${{ env.PROJECT_NAME }}/$GITHUB_SHA.zip,bundleType=zip
+
+      # 10. S3 접근 테스트 (디버그용)
+      - name: Test AWS credentials
+        run: aws s3 ls
