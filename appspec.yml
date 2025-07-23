@@ -5,6 +5,8 @@ files:                  # S3에서 가져온 파일 배치 설정
   - source: /           # ZIP 루트 기준
     destination: /home/ubuntu/TOOCK-Backend  # EC2에 배치될 경로
     overwrite: yes      # 기존 파일 덮어쓰기
+file_exists_behavior: OVERWRITE
+
 
 permissions:            # 배포된 디렉토리 권한 설정
   - object: /home/ubuntu/TOOCK-Backend
