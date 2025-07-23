@@ -24,9 +24,20 @@ repositories {
 }
 
 dependencies {
+    // 웹
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // DB: H2 (로컬)
+    runtimeOnly 'com.h2database:h2'
+
+    // DB: MySQL (Dev/EC2)
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    // 테스트
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
