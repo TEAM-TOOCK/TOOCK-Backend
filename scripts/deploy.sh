@@ -2,7 +2,7 @@
 
 APP_NAME="TOOCK-Backend"
 DEPLOY_PATH="/home/ubuntu/$APP_NAME"
-JAR_NAME=$(ls -t $DEPLOY_PATH/build/libs | grep '.jar$' | head -n 1)
+JAR_NAME=$(ls -t $DEPLOY_PATH/build/libs | grep -v 'plain' | grep '.jar$' | head -n 1)
 JAR_PATH="$DEPLOY_PATH/build/libs/$JAR_NAME"
 LOG_PATH="$DEPLOY_PATH/deploy.log"
 
