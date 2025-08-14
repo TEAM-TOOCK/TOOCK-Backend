@@ -5,9 +5,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Getter
 @Entity
+@Where(clause = "status = 'ACTIVATED'")
+@SQLDelete(sql = "UPDATE member SET status = 'DELETED' WHERE id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
