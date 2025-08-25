@@ -43,6 +43,12 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    // WebClient (HTTP 클라이언트)
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // 파일 업로드 처리를 위한 Apache Commons
+    implementation 'commons-io:commons-io:2.15.1'
+
     // 테스트
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
