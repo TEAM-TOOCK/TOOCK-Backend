@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import toock.backend.global.error.ErrorCode;
 import toock.backend.infra.whisper.exception.WhisperException;
 
 import java.io.IOException;
@@ -44,9 +45,7 @@ public class WhisperService {
     public String transcribeAudio(MultipartFile audioFile) {
         try {
             validateAudioFile(audioFile);
-            
             Path tempFilePath = saveToTempFile(audioFile);
-            
             try {
                 String transcription = callWhisperApi(tempFilePath, audioFile.getOriginalFilename());
                 log.info("음성 변환 완료: 파일명={}, 변환된 텍스트 길이={}", 
@@ -56,12 +55,13 @@ public class WhisperService {
             } finally {
                 Files.deleteIfExists(tempFilePath);
             }
-            
         } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (WhisperException e) {
             throw e;
         } catch (Exception e) {
             log.error("음성 변환 처리 중 오류 발생: {}", e.getMessage(), e);
-            throw new WhisperException("음성 변환 처리 중 오류가 발생했습니다.", e);
+            throw new WhisperException(ErrorCode.WHISPER_TRANSCRIBE_FAILED, "음성 변환 처리 중 오류가 발생했습니다.", e);
         }
     }
 
@@ -93,10 +93,11 @@ public class WhisperService {
 
             // JSON 응답에서 text 필드 추출
             return extractTextFromResponse(response);
-            
+        } catch (WhisperException e) {
+            throw e;
         } catch (Exception e) {
             log.error("Whisper API 호출 실패: {}", e.getMessage());
-            throw new WhisperException("Whisper API 호출 중 오류가 발생했습니다.", e);
+            throw new WhisperException(ErrorCode.EXTERNAL_API_ERROR, "Whisper API 호출 중 오류가 발생했습니다.", e);
         }
     }
 
@@ -112,7 +113,7 @@ public class WhisperService {
                 return response.substring(textStart, textEnd);
             }
         }
-        throw new WhisperException("API 응답에서 텍스트를 추출할 수 없습니다.");
+        throw new WhisperException(ErrorCode.WHISPER_RESPONSE_PARSING_FAILED, "API 응답에서 텍스트를 추출할 수 없습니다.");
     }
 
     /**
