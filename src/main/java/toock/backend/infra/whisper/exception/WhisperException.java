@@ -1,4 +1,4 @@
-package toock.backend.whisper.exception;
+package toock.backend.infra.whisper.exception;
 
 public class WhisperException extends RuntimeException {
     

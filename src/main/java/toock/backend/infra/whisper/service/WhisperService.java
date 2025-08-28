@@ -1,4 +1,4 @@
-package toock.backend.whisper.service;
+package toock.backend.infra.whisper.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
