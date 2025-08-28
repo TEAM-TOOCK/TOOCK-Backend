@@ -38,7 +38,7 @@ class WhisperServiceTest {
         );
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             whisperService.transcribeAudio(emptyFile);
         });
     }
@@ -54,7 +54,7 @@ class WhisperServiceTest {
         );
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             whisperService.transcribeAudio(unsupportedFile);
         });
     }
@@ -62,7 +62,7 @@ class WhisperServiceTest {
     @Test
     void testTranscribeAudio_NullFile() {
         // When & Then
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             whisperService.transcribeAudio(null);
         });
     }

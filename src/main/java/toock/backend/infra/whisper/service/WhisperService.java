@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import toock.backend.infra.whisper.exception.WhisperException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -56,9 +57,11 @@ public class WhisperService {
                 Files.deleteIfExists(tempFilePath);
             }
             
+        } catch (IllegalArgumentException e) {
+            throw e;
         } catch (Exception e) {
             log.error("음성 변환 처리 중 오류 발생: {}", e.getMessage(), e);
-            throw new RuntimeException("음성 변환 처리 중 오류가 발생했습니다: " + e.getMessage());
+            throw new WhisperException("음성 변환 처리 중 오류가 발생했습니다.", e);
         }
     }
 
@@ -93,7 +96,7 @@ public class WhisperService {
             
         } catch (Exception e) {
             log.error("Whisper API 호출 실패: {}", e.getMessage());
-            throw new RuntimeException("Whisper API 호출 중 오류가 발생했습니다: " + e.getMessage());
+            throw new WhisperException("Whisper API 호출 중 오류가 발생했습니다.", e);
         }
     }
 
@@ -109,7 +112,7 @@ public class WhisperService {
                 return response.substring(textStart, textEnd);
             }
         }
-        throw new RuntimeException("API 응답에서 텍스트를 추출할 수 없습니다.");
+        throw new WhisperException("API 응답에서 텍스트를 추출할 수 없습니다.");
     }
 
     /**
