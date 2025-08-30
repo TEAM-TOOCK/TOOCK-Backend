@@ -55,6 +55,12 @@ public class InterviewSession {
         this.startedAt = startedAt;
         this.completedAt = completedAt;
     }
+
+    // 면접 종료 시 호출될 메소드
+    public void complete() {
+        this.status = "COMPLETED";
+        this.completedAt = OffsetDateTime.now();
+    }
 }
 
 
