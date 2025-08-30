@@ -7,7 +7,7 @@ import toock.backend.interview.dto.InterviewDto;
 import toock.backend.interview.service.InterviewService;
 
 @RestController
-@RequestMapping("/api/interviews")
+@RequestMapping("/interviews")
 @RequiredArgsConstructor
 public class InterviewController {
 
