@@ -48,3 +48,10 @@ out/
 
 ### Env ###
 .env
+
+# CSV Data Folder
+src/main/resources/csv/
+
+
+# mac
+.DS_Store
