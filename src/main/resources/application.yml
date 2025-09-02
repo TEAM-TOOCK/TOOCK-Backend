@@ -3,4 +3,8 @@ spring:
     name: TOOCK-backend
 
   profiles:
-    active: local  # 기본은 로컬(H2)로 실행되도록 설정
+    active: local
+
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}

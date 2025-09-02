@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "interviewqa",
-       uniqueConstraints = {
-           @UniqueConstraint(name = "uk_interview_question_order",
-                             columnNames = {"interview_id", "question_order"})
-       })
+@Table(name = "interview_qa",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_interview_question_order",
+                        columnNames = {"interview_session_id", "question_order", "follow_up_order"})
+        })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InterviewQA {
 
@@ -21,18 +21,21 @@ public class InterviewQA {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "interview_id", nullable = false)
+    @JoinColumn(name = "interview_session_id", nullable = false)
     private InterviewSession interviewSession;
 
     @Column(name = "question_order", nullable = false)
-    private Integer questionOrder;
+    private Integer questionOrder; // 주요 질문의 순서 (1~5)
+
+    @Column(name = "follow_up_order", nullable = false)
+    private Integer followUpOrder; // 꼬리 질문의 순서 (주요 질문은 0)
 
     @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String questionText;
 
     @Lob
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String answerText;
 
     @Column
@@ -42,19 +45,16 @@ public class InterviewQA {
     private String s3Url;
 
     @Builder
-    public InterviewQA(InterviewSession interviewSession,
-                       Integer questionOrder,
-                       String questionText,
-                       String answerText,
-                       Integer responseTimeSeconds,
-                       String s3Url) {
+    public InterviewQA(InterviewSession interviewSession, Integer questionOrder, Integer followUpOrder, String questionText) {
         this.interviewSession = interviewSession;
         this.questionOrder = questionOrder;
+        this.followUpOrder = followUpOrder;
         this.questionText = questionText;
+    }
+
+    public void updateAnswer(String answerText, Integer responseTimeSeconds, String s3Url) {
         this.answerText = answerText;
         this.responseTimeSeconds = responseTimeSeconds;
         this.s3Url = s3Url;
     }
 }
-
-

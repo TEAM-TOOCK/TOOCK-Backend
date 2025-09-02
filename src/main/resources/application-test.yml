@@ -22,3 +22,7 @@ openai:
 whisper:
   upload:
     dir: test-uploads/audio
+
+gemini:
+  api:
+    key: test-api-key
