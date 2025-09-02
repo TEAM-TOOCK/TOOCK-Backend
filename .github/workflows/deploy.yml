@@ -35,7 +35,7 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # 4. application-dev.yml에 GitHub Secrets 주입 (MySQL 연결 정보)
+      # 4. application-dev.yml에 GitHub Secrets 주입
       - name: Inject secrets into application-dev.yml
         uses: cschleiden/replace-tokens@v1
         with:
@@ -45,6 +45,7 @@ jobs:
           DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
           DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
           GEMINI_API_KEY : ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       # 5. Gradle 빌드 (테스트 제외, 캐시 사용)
       - name: Build with Gradle
