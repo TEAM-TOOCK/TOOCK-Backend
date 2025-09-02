@@ -46,9 +46,12 @@ dependencies {
     //s3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
-
-    // WebClient를 사용
+    // WebClient (HTTP 클라이언트)
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // 파일 업로드 처리를 위한 Apache Commons
+    implementation 'commons-io:commons-io:2.15.1'
+
 
     // 테스트
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
