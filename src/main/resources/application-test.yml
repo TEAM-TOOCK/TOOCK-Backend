@@ -9,3 +9,15 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+
+  cloud:
+    aws:
+      credentials:
+        access-key: aws-access-key
+        secret-key: aws-secret-key
+      region:
+        static: ap-northeast-2
+      s3:
+        bucket: s3-bucket
+      stack:
+        auto: false
