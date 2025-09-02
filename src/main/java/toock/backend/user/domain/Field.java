@@ -1,6 +1,7 @@
 package toock.backend.user.domain;
 
 public enum Field {
+    DEFAULT,
     BACKEND,
     FRONTEND,
     DEVOPS,

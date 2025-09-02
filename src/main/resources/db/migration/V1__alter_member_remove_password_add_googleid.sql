@@ -1,0 +1,3 @@
+ALTER TABLE member DROP COLUMN password;
+ALTER TABLE member ADD COLUMN google_id VARCHAR(255) NULL AFTER field;
+UPDATE member SET field = 'DEFAULT' WHERE field IS NULL;
