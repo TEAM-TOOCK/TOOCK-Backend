@@ -9,3 +9,16 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
+
+openai:
+  api:
+    key: test-api-key
+    timeout: 60
+
+whisper:
+  upload:
+    dir: test-uploads/audio
