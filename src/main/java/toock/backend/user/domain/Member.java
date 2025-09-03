@@ -32,20 +32,22 @@ public class Member {
     @Column(nullable = false)
     private Status status;
 
-    @Column(nullable = false, length = 255)
-    private String password;
+    // 소셜 로그인 전용: 패스워드 제거
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Field field;
 
+    @Column(length = 255)
+    private String googleId;
+
     @Builder
-    public Member(String email, String name, String username, String password, Field field) {
+    public Member(String email, String name, String username, Field field, String googleId) {
         this.email = email;
         this.name = name;
         this.username = username;
-        this.password = password;
-        this.field = field;
+        this.field = (field != null) ? field : Field.DEFAULT;
+        this.googleId = googleId;
         this.status = Status.ACTIVATED;
     }
 }
