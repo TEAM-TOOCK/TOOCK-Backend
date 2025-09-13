@@ -51,32 +51,30 @@ public class CompanyReview {
     @Column(columnDefinition = "TEXT")
     private String summary;
 
-    // CSV: 'Interview Path'
     @Column(length = 255)
     private String interviewPath;
 
-    // CSV: 'Interview Questions'
     @Lob
     @Column(columnDefinition = "TEXT")
     private String interviewQuestions;
 
-    // CSV: 'Interview Answer/Feeling'
     @Lob
     @Column(columnDefinition = "TEXT")
     private String interviewAnswer;
 
-    // CSV: 'Announcement Period'
     @Column(length = 50)
     private String announcementPeriod;
 
-    // CSV: 'Interview Result'
     @Column(length = 50)
     private String interviewResult;
 
-    // CSV: 'Interview Experience'
+
+    @Column(length = 50)
+    private String announcementPeriod;
+
+
     @Column(columnDefinition = "TEXT")
     private String interviewExperience;
-
 
     @Builder
     public CompanyReview(Company company,

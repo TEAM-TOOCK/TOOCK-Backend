@@ -9,11 +9,39 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test-google-client-id
+            client-secret: test-google-client-secret
+            scope:
+              - email
+              - profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
   servlet:
     multipart:
       max-file-size: 25MB
       max-request-size: 25MB
 
+  cloud:
+    aws:
+      credentials:
+        access-key: aws-access-key
+        secret-key: aws-secret-key
+      region:
+        static: ap-northeast-2
+      s3:
+        bucket: s3-bucket
+      stack:
+        auto: false
 openai:
   api:
     key: test-api-key
@@ -23,6 +51,13 @@ whisper:
   upload:
     dir: test-uploads/audio
 
+
 gemini:
   api:
     key: test-api-key
+
+# JWT 설정
+jwt:
+  secret: test-jwt-secret
+  expiration: 86400000
+

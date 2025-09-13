@@ -46,6 +46,9 @@ dependencies {
 
     // csv 파일 파싱
     implementation 'com.opencsv:opencsv:5.7.1'
+    
+    //s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 
     // WebClient (HTTP 클라이언트)
@@ -53,6 +56,14 @@ dependencies {
 
     // 파일 업로드 처리를 위한 Apache Commons
     implementation 'commons-io:commons-io:2.15.1'
+    
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    // Google OAuth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 
     // 테스트
