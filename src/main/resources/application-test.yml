@@ -51,7 +51,13 @@ whisper:
   upload:
     dir: test-uploads/audio
 
+
+gemini:
+  api:
+    key: test-api-key
+
 # JWT 설정
 jwt:
   secret: test-jwt-secret
   expiration: 86400000
+

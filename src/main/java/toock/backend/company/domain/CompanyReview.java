@@ -64,7 +64,6 @@ public class CompanyReview {
     @Column(columnDefinition = "TEXT")
     private String interviewExperience;
 
-
     @Builder
     public CompanyReview(Company company,
                          String field,

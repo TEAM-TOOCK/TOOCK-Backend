@@ -44,6 +44,7 @@ jobs:
           DATASOURCE_URL: ${{ secrets.DATASOURCE_URL }}
           DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
           DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
+          GEMINI_API_KEY : ${{ secrets.GEMINI_API_KEY }}
           AWS_ACCESS_KEY : ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY : ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_BUCKET_NAME : ${{ env.S3_BUCKET_NAME }}

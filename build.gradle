@@ -43,11 +43,13 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+
     // csv 파일 파싱
     implementation 'com.opencsv:opencsv:5.7.1'
     
     //s3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 
     // WebClient (HTTP 클라이언트)
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -62,6 +64,7 @@ dependencies {
 
     // Google OAuth2
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
 
     // 테스트
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
