@@ -22,31 +22,24 @@ public class CompanyReview {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    // CSV: 'Job Field'
     @Column(length = 50)
     private String field;
 
-    // CSV: 'Job Level'
     @Column(length = 50)
     private String level;
 
-    // CSV: 'Date Posted'
     @Column
     private OffsetDateTime createdAt;
 
-    // CSV: 'Interview Date'
     @Column
     private LocalDate interviewedAt;
 
-    // CSV: 'Hiring Method'
     @Column(length = 255)
     private String interviewFormat;
 
-    // CSV: 'Interview Difficulty'
     @Column(length = 50)
     private String difficulty;
 
-    // CSV: 'Summary/Review'
     @Lob
     @Column(columnDefinition = "TEXT")
     private String summary;
@@ -67,11 +60,6 @@ public class CompanyReview {
 
     @Column(length = 50)
     private String interviewResult;
-
-
-    @Column(length = 50)
-    private String announcementPeriod;
-
 
     @Column(columnDefinition = "TEXT")
     private String interviewExperience;
