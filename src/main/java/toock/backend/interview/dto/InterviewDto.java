@@ -32,7 +32,6 @@ public class InterviewDto {
     public static class NextRequest {
         private Long interviewSessionId;
         private String answerText;
-        private Integer responseTimeSeconds;
         private String s3Url;
     }
 
