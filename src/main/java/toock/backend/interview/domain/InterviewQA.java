@@ -38,8 +38,8 @@ public class InterviewQA {
     @Column(columnDefinition = "TEXT")
     private String answerText;
 
-    @Column
-    private Integer responseTimeSeconds;
+//    @Column
+//    private Integer responseTimeSeconds;
 
     @Column(length = 500)
     private String s3Url;
@@ -52,9 +52,8 @@ public class InterviewQA {
         this.questionText = questionText;
     }
 
-    public void updateAnswer(String answerText, Integer responseTimeSeconds, String s3Url) {
+    public void updateAnswer(String answerText, String s3Url) {
         this.answerText = answerText;
-        this.responseTimeSeconds = responseTimeSeconds;
         this.s3Url = s3Url;
     }
 }

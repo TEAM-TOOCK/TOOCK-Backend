@@ -101,7 +101,7 @@ public class InterviewService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("답변할 질문을 찾을 수 없습니다. 모든 질문에 답변이 완료되었습니다."));
 
-        currentQA.updateAnswer(request.getAnswerText(), request.getResponseTimeSeconds(), request.getS3Url());
+        currentQA.updateAnswer(request.getAnswerText(), request.getS3Url());
 
         List<String> conversationHistory = buildConversationHistory(allQAs);
 
