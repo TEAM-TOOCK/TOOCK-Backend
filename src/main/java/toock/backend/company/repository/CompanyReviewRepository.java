@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Long> {
     List<CompanyReview> findByCompany_Name(String companyName);
+    List<CompanyReview> findByCompany_NameAndField(String companyName, String field);
 }

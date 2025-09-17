@@ -29,8 +29,8 @@ public class InterviewSession {
     private Company company;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Field field;
+    @Column(nullable = false, length = 50)
+    private InterviewFieldCategory field;
 
     @Column(length = 50)
     private String status;
@@ -44,7 +44,7 @@ public class InterviewSession {
     @Builder
     public InterviewSession(Member member,
                            Company company,
-                           Field field,
+                            InterviewFieldCategory field,
                            String status,
                            OffsetDateTime startedAt,
                            OffsetDateTime completedAt) {

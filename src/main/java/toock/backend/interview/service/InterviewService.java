@@ -11,6 +11,7 @@ import toock.backend.company.domain.Company;
 import toock.backend.company.domain.CompanyReview;
 import toock.backend.company.repository.CompanyRepository;
 import toock.backend.company.repository.CompanyReviewRepository;
+import toock.backend.interview.domain.InterviewFieldCategory;
 import toock.backend.interview.domain.InterviewQA;
 import toock.backend.interview.domain.InterviewSession;
 import toock.backend.interview.dto.InterviewDto;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static toock.backend.interview.domain.InterviewFieldCategory.*;
 
 @Slf4j
 @Service
@@ -42,6 +45,7 @@ public class InterviewService {
     private static final int MAX_MAIN_QUESTIONS = 3;
     private static final int MAX_FOLLOW_UP_QUESTIONS = 1;
 
+
     @Transactional
     public InterviewDto.StartResponse startInterview(InterviewDto.StartRequest request) {
         Member member = memberRepository.findById(request.getMemberId())
@@ -58,9 +62,16 @@ public class InterviewService {
                 .build();
         interviewSessionRepository.save(session);
 
-        List<CompanyReview> reviews = companyReviewRepository.findByCompany_Name(company.getName());
+        // 1. Enum의 이름을 문자열로 변환
+        String fieldCategory = request.getField().getDbValue();
+
+        // 2. 변환된 문자열로 데이터베이스에서 직접 면접 후기를 조회합니다.
+        List<CompanyReview> reviews = companyReviewRepository.findByCompany_NameAndField(company.getName(), fieldCategory);
+
+        log.info("reviews: {}", reviews.toString());
+
         String contextData = formatReviewsForPrompt(reviews);
-        String mainQuestionsPrompt = promptService.createMainQuestionsPrompt(contextData, request.getField().name());
+        String mainQuestionsPrompt = promptService.createMainQuestionsPrompt(contextData, fieldCategory);
         String rawResponse = geminiService.generateQuestion(mainQuestionsPrompt);
 
         String cleanJson = sanitizeJsonResponse(rawResponse);
@@ -182,4 +193,6 @@ public class InterviewService {
                 .limit(20)
                 .collect(Collectors.joining("\n"));
     }
+
+
 }
