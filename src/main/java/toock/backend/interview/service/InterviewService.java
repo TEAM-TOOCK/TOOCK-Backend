@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toock.backend.company.domain.Company;
@@ -44,6 +45,8 @@ public class InterviewService {
 
     private static final int MAX_MAIN_QUESTIONS = 3;
     private static final int MAX_FOLLOW_UP_QUESTIONS = 1;
+    private static final int MAX_REVIEW_SAMPLES = 20; //
+
 
 
     @Transactional
@@ -65,8 +68,13 @@ public class InterviewService {
         // 1. Enum의 이름을 문자열로 변환
         String fieldCategory = request.getField().getDbValue();
 
-        // 2. 변환된 문자열로 데이터베이스에서 직접 면접 후기를 조회합니다.
-        List<CompanyReview> reviews = companyReviewRepository.findByCompany_NameAndField(company.getName(), fieldCategory);
+        // 2. 변환된 문자열로 데이터베이스에서 직접 면접 후기를 조회합니다. (랜덤으로 N개 조회)
+        List<CompanyReview> reviews = companyReviewRepository.findRandomByCompanyAndField(
+                company.getName(),
+                fieldCategory,
+                PageRequest.of(0, MAX_REVIEW_SAMPLES)
+        );
+
 
         log.info("reviews: {}", reviews.toString());
 
