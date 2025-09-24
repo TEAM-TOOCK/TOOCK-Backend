@@ -3,6 +3,7 @@ package toock.backend.interview.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import toock.backend.interview.domain.InterviewFieldCategory;
 import toock.backend.user.domain.Field; // User 도메인의 Field Enum 사용
 
 public class InterviewDto {
@@ -10,9 +11,9 @@ public class InterviewDto {
     // 면접 시작 요청 DTO
     @Getter @Setter @NoArgsConstructor
     public static class StartRequest {
-        private Long memberId;      // 면접을 진행할 멤버 ID
-        private String companyName; // 면접 볼 회사 이름
-        private Field field;        // 면접 볼 직무 분야
+        private Long memberId;
+        private String companyName;
+        private InterviewFieldCategory field; // User의 Field가 아닌 InterviewFieldCategory 사용
     }
 
     // 면접 시작 응답 DTO
