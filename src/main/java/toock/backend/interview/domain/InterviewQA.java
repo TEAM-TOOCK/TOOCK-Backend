@@ -38,9 +38,6 @@ public class InterviewQA {
     @Column(columnDefinition = "TEXT")
     private String answerText;
 
-//    @Column
-//    private Integer responseTimeSeconds;
-
     @Column(length = 500)
     private String s3Url;
 
