@@ -23,25 +23,35 @@ public class InterviewAnalysis {
     private Integer score;
 
     @Column
-    private Integer technicalScore;
+    private Integer technicalExpertiseScore;
 
     @Column
-    private Integer attitudeScore;
+    private Integer collaborationCommunicationScore;
+
+    @Column
+    private Integer problemSolvingScore;
+
+    @Column
+    private Integer growthPotentialScore;
 
     @Lob
-    @Column
+    @Column(columnDefinition = "LONGTEXT")
     private String summary;
 
     @Builder
     public InterviewAnalysis(InterviewSession interviewSession,
                             Integer score,
-                            Integer technicalScore,
-                            Integer attitudeScore,
+                            Integer technicalExpertiseScore,
+                            Integer collaborationCommunicationScore,
+                            Integer problemSolvingScore,
+                            Integer growthPotentialScore,
                             String summary) {
         this.interviewSession = interviewSession;
         this.score = score;
-        this.technicalScore = technicalScore;
-        this.attitudeScore = attitudeScore;
+        this.technicalExpertiseScore = technicalExpertiseScore;
+        this.collaborationCommunicationScore = collaborationCommunicationScore;
+        this.problemSolvingScore = problemSolvingScore;
+        this.growthPotentialScore = growthPotentialScore;
         this.summary = summary;
     }
 }

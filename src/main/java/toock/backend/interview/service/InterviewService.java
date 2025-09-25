@@ -14,10 +14,14 @@ import toock.backend.company.repository.CompanyRepository;
 import toock.backend.company.repository.CompanyReviewRepository;
 import toock.backend.interview.domain.InterviewFieldCategory;
 import toock.backend.interview.domain.InterviewQA;
+import toock.backend.interview.domain.InterviewAnalysis;
 import toock.backend.interview.domain.InterviewSession;
 import toock.backend.interview.dto.InterviewDto;
+import toock.backend.interview.dto.InterviewAnalysisResponseDto;
+import toock.backend.interview.dto.InterviewEvaluationResult;
 import toock.backend.interview.repository.InterviewQARepository;
 import toock.backend.interview.repository.InterviewSessionRepository;
+import toock.backend.interview.repository.InterviewAnalysisRepository;
 import toock.backend.user.domain.Member;
 import toock.backend.user.repository.MemberRepository;
 
@@ -25,6 +29,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static toock.backend.interview.domain.InterviewFieldCategory.*;
@@ -39,6 +44,7 @@ public class InterviewService {
     private final CompanyReviewRepository companyReviewRepository;
     private final InterviewSessionRepository interviewSessionRepository;
     private final InterviewQARepository interviewQARepository;
+    private final InterviewAnalysisRepository interviewAnalysisRepository;
     private final PromptService promptService;
     private final GeminiService geminiService;
     private final ObjectMapper objectMapper;
@@ -153,6 +159,60 @@ public class InterviewService {
         }
     }
 
+    @Transactional
+    public InterviewAnalysisResponseDto evaluateInterview(Long interviewSessionId) {
+        InterviewSession session = interviewSessionRepository.findById(interviewSessionId)
+                .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없습니다. ID: " + interviewSessionId));
+
+        List<InterviewQA> qas = interviewQARepository.findByInterviewSession_IdOrderByQuestionOrderAscFollowUpOrderAsc(interviewSessionId);
+        if (qas.isEmpty()) {
+            throw new IllegalArgumentException("해당 세션에 대한 면접 질문-답변 데이터가 없습니다. ID: " + interviewSessionId);
+        }
+
+        // 기존에 분석된 내용이 있다면 반환 (멱등성 보장)
+        Optional<InterviewAnalysis> existingAnalysis = interviewAnalysisRepository.findByInterviewSessionId(interviewSessionId);
+        if (existingAnalysis.isPresent()) {
+            return createAnalysisResponseDto(existingAnalysis.get(), existingAnalysis.get().getInterviewSession());
+        }
+
+        String evaluationPrompt = promptService.createInterviewEvaluationPrompt(buildConversationHistory(qas));
+        String rawResponse = geminiService.generateQuestion(evaluationPrompt);
+
+        String cleanJson = sanitizeJsonResponse(rawResponse);
+        InterviewEvaluationResult evaluationResult;
+        try {
+            evaluationResult = objectMapper.readValue(cleanJson, InterviewEvaluationResult.class);
+        } catch (JsonProcessingException e) {
+            log.error("Gemini 면접 평가 응답 JSON 파싱 실패. 원본: {}, 정리 후: {}", rawResponse, cleanJson, e);
+            throw new IllegalStateException("Gemini로부터 받은 면접 평가 형식이 올바르지 않습니다.");
+        }
+
+        String summaryToSave = evaluationResult.getSummary();
+        
+        log.info("저장될 summary 길이: {}, 내용: {}", summaryToSave != null ? summaryToSave.length() : 0, summaryToSave);
+
+        InterviewAnalysis analysis = InterviewAnalysis.builder()
+                .interviewSession(session)
+                .score(evaluationResult.getTotalScore())
+                .technicalExpertiseScore(evaluationResult.getTechnicalExpertiseScore())
+                .collaborationCommunicationScore(evaluationResult.getCollaborationCommunicationScore())
+                .problemSolvingScore(evaluationResult.getProblemSolvingScore())
+                .growthPotentialScore(evaluationResult.getGrowthPotentialScore())
+                .summary(summaryToSave)
+                .build();
+        interviewAnalysisRepository.save(analysis);
+
+        log.info("면접 분석 결과 저장됨: session_id={}, score={}, technical={}, soft={}, problem={}, growth={}, summary_length={}",
+                session.getId(),
+                analysis.getScore(),
+                analysis.getTechnicalExpertiseScore(),
+                analysis.getCollaborationCommunicationScore(),
+                analysis.getProblemSolvingScore(),
+                analysis.getGrowthPotentialScore(),
+                analysis.getSummary() != null ? analysis.getSummary().length() : 0);
+
+        return createAnalysisResponseDto(analysis, analysis.getInterviewSession());
+    }
 
     //markdown 표시가 있을경우 제거해줌.
     private String sanitizeJsonResponse(String rawResponse) {
@@ -202,5 +262,16 @@ public class InterviewService {
                 .collect(Collectors.joining("\n"));
     }
 
-
+    private InterviewAnalysisResponseDto createAnalysisResponseDto(InterviewAnalysis analysis, InterviewSession session) {
+        return InterviewAnalysisResponseDto.builder()
+                .id(analysis.getId())
+                .interviewSessionId(session.getId())
+                .score(analysis.getScore())
+                .technicalExpertiseScore(analysis.getTechnicalExpertiseScore())
+                .collaborationCommunicationScore(analysis.getCollaborationCommunicationScore())
+                .problemSolvingScore(analysis.getProblemSolvingScore())
+                .growthPotentialScore(analysis.getGrowthPotentialScore())
+                .summary(analysis.getSummary())
+                .build();
+    }
 }

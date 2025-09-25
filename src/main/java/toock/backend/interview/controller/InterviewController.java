@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import toock.backend.infra.s3.S3Service;
 import toock.backend.infra.whisper.service.WhisperService;
 import toock.backend.interview.dto.InterviewDto;
+import toock.backend.interview.dto.InterviewAnalysisResponseDto;
 import toock.backend.interview.service.InterviewService;
 
 @RestController
@@ -42,5 +43,10 @@ public class InterviewController {
 
         // 4. 면접 로직을 처리하고 다음 질문을 받아 응답합니다.
         return ResponseEntity.ok(interviewService.nextQuestion(request));
+    }
+
+    @PostMapping("/analyze/{interviewSessionId}")
+    public ResponseEntity<InterviewAnalysisResponseDto> analyzeInterview(@PathVariable Long interviewSessionId) {
+        return ResponseEntity.ok(interviewService.evaluateInterview(interviewSessionId));
     }
 }
