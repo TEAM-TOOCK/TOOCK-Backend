@@ -2,6 +2,7 @@ package toock.backend.interview.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import toock.backend.infra.s3.S3Service;
@@ -21,14 +22,16 @@ public class InterviewController {
     private final WhisperService whisperService;
 
     @PostMapping("/start")
-    public ResponseEntity<InterviewDto.StartResponse> startInterview(@RequestBody InterviewDto.StartRequest request) {
-        return ResponseEntity.ok(interviewService.startInterview(request));
+    public ResponseEntity<InterviewDto.StartResponse> startInterview(@RequestBody InterviewDto.StartRequest request, @AuthenticationPrincipal Long memberId) {
+        return ResponseEntity.ok(interviewService.startInterview(request,memberId));
     }
 
     @PostMapping("/next")
     public ResponseEntity<InterviewDto.NextResponse> nextQuestion(
             @RequestParam("interviewSessionId") Long interviewSessionId,
-            @RequestParam("audioFile") MultipartFile audioFile) {
+            @RequestParam("audioFile") MultipartFile audioFile,
+            @AuthenticationPrincipal Long memberId
+            ) {
 
         // 1. 음성 파일을 S3에 업로드하고 URL을 받음.
         String s3Url = s3Service.uploadAudio(audioFile, "interview-audio");
@@ -43,7 +46,7 @@ public class InterviewController {
         request.setS3Url(s3Url);
 
         // 4. 면접 로직을 처리하고 다음 질문을 받아 응답합니다.
-        return ResponseEntity.ok(interviewService.nextQuestion(request));
+        return ResponseEntity.ok(interviewService.nextQuestion(request,memberId));
     }
 
     @PostMapping("/analyze/{interviewSessionId}")

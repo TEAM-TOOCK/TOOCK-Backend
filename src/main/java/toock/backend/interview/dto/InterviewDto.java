@@ -11,7 +11,6 @@ public class InterviewDto {
     // 면접 시작 요청 DTO
     @Getter @Setter @NoArgsConstructor
     public static class StartRequest {
-        private Long memberId;
         private String companyName;
         private InterviewFieldCategory field; // User의 Field가 아닌 InterviewFieldCategory 사용
     }
