@@ -35,10 +35,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Long memberId = jwtUtil.extractMemberId(token);
                 
                 UsernamePasswordAuthenticationToken authentication = 
-                    new UsernamePasswordAuthenticationToken(memberId, null, Collections.emptyList());
+                    new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
                 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.debug("JWT 인증 성공: ID :{}, email :{}", memberId,email);
+                log.debug("JWT 인증 성공: {}", email);
             } catch (Exception e) {
                 log.error("JWT 토큰 처리 중 오류 발생", e);
             }
