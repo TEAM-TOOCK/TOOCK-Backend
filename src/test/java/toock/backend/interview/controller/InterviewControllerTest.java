@@ -80,14 +80,19 @@ public class InterviewControllerTest {
         mockMvc.perform(post("/interviews/analyze/{interviewSessionId}", sessionId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.interviewSessionId").value(sessionId))
-                .andExpect(jsonPath("$.score").value(4))
-                .andExpect(jsonPath("$.technicalExpertiseScore").value(5))
-                .andExpect(jsonPath("$.collaborationCommunicationScore").value(4))
-                .andExpect(jsonPath("$.problemSolvingScore").value(4))
-                .andExpect(jsonPath("$.growthPotentialScore").value(3))
-                .andExpect(jsonPath("$.summary").value("좋은 요약"));
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.code").value("SUCCESS"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andExpect(jsonPath("$.data.id").value(1L))
+                .andExpect(jsonPath("$.data.interviewSessionId").value(sessionId))
+                .andExpect(jsonPath("$.data.score").value(4))
+                .andExpect(jsonPath("$.data.technicalExpertiseScore").value(5))
+                .andExpect(jsonPath("$.data.collaborationCommunicationScore").value(4))
+                .andExpect(jsonPath("$.data.problemSolvingScore").value(4))
+                .andExpect(jsonPath("$.data.growthPotentialScore").value(3))
+                .andExpect(jsonPath("$.data.summary").value("좋은 요약"));
+
+        verify(interviewService).evaluateInterview(sessionId);
     }
 
     @Test
