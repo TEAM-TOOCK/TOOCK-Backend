@@ -47,8 +47,9 @@ public class InterviewController {
     }
 
     @PostMapping("/analyze/{interviewSessionId}")
-    public ResponseEntity<InterviewAnalysisResponseDto> analyzeInterview(@PathVariable Long interviewSessionId) {
-        return ResponseEntity.ok(interviewService.evaluateInterview(interviewSessionId));
+    public ResponseEntity<CommonResponseDto<InterviewAnalysisResponseDto>> analyzeInterview(@PathVariable Long interviewSessionId) {
+        InterviewAnalysisResponseDto analysis = interviewService.evaluateInterview(interviewSessionId);
+        return ResponseEntity.ok(CommonResponseDto.success(analysis));
     }
 
     @GetMapping("/results/{interviewSessionId}")
