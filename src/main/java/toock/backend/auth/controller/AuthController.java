@@ -59,7 +59,7 @@ public class AuthController {
     public ResponseEntity<String> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
-            return ResponseEntity.ok("현재 인증된 사용자ID: " + authentication.getName());
+            return ResponseEntity.ok("현재 인증된 사용자 ID: " + authentication.getName());
         }
         return ResponseEntity.ok("인증되지 않은 사용자");
     }

@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     new UsernamePasswordAuthenticationToken(memberId, null, Collections.emptyList());
                 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.debug("JWT 인증 성공 ID: {}", memberId);
+                log.debug("JWT 인증 성공: ID :{}, email :{}", memberId,email);
             } catch (Exception e) {
                 log.error("JWT 토큰 처리 중 오류 발생", e);
             }
