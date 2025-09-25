@@ -56,9 +56,9 @@ public class InterviewService {
 
 
     @Transactional
-    public InterviewDto.StartResponse startInterview(InterviewDto.StartRequest request) {
-        Member member = memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. ID: " + request.getMemberId()));
+    public InterviewDto.StartResponse startInterview(InterviewDto.StartRequest request,Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. ID: " +memberId));
         Company company = companyRepository.findByName(request.getCompanyName())
                 .orElseThrow(() -> new IllegalArgumentException("회사를 찾을 수 없습니다. 이름: " + request.getCompanyName()));
 
@@ -115,9 +115,14 @@ public class InterviewService {
     }
 
     @Transactional
-    public InterviewDto.NextResponse nextQuestion(InterviewDto.NextRequest request) {
+    public InterviewDto.NextResponse nextQuestion(InterviewDto.NextRequest request,Long memberId) {
         InterviewSession session = interviewSessionRepository.findById(request.getInterviewSessionId())
                 .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없습니다. ID: " + request.getInterviewSessionId()));
+
+        if (!session.getMember().getId().equals(memberId)) {
+            // 다른 사람의 면접에 접근하려고 하면 에러 발생
+            throw new SecurityException("해당 면접에 접근할 권한이 없습니다.");
+        }
 
         List<InterviewQA> allQAs = interviewQARepository.findByInterviewSession_IdOrderByQuestionOrderAscFollowUpOrderAsc(session.getId());
 
