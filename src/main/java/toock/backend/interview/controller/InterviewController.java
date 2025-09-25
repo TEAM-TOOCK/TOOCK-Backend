@@ -9,6 +9,7 @@ import toock.backend.infra.whisper.service.WhisperService;
 import toock.backend.interview.dto.InterviewDto;
 import toock.backend.interview.dto.InterviewAnalysisResponseDto;
 import toock.backend.interview.service.InterviewService;
+import toock.backend.global.dto.CommonResponseDto;
 
 @RestController
 @RequestMapping("/interviews")
@@ -48,5 +49,11 @@ public class InterviewController {
     @PostMapping("/analyze/{interviewSessionId}")
     public ResponseEntity<InterviewAnalysisResponseDto> analyzeInterview(@PathVariable Long interviewSessionId) {
         return ResponseEntity.ok(interviewService.evaluateInterview(interviewSessionId));
+    }
+
+    @GetMapping("/results/{interviewSessionId}")
+    public ResponseEntity<CommonResponseDto<InterviewAnalysisResponseDto>> getInterviewResult(@PathVariable Long interviewSessionId) {
+        InterviewAnalysisResponseDto analysis = interviewService.getInterviewAnalysis(interviewSessionId);
+        return ResponseEntity.ok(CommonResponseDto.success(analysis));
     }
 }

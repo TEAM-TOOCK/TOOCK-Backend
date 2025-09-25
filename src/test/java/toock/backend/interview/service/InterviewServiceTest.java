@@ -228,4 +228,45 @@ public class InterviewServiceTest {
         verify(objectMapper, never()).readValue(anyString(), eq(InterviewEvaluationResult.class));
         verify(interviewAnalysisRepository, never()).save(any(InterviewAnalysis.class));
     }
+
+    @Test
+    @DisplayName("면접 분석 조회 성공")
+    void getInterviewAnalysis_Success() {
+        Long sessionId = 1L;
+        InterviewAnalysis mockAnalysis = mock(InterviewAnalysis.class);
+        when(mockAnalysis.getId()).thenReturn(1L);
+        when(mockAnalysis.getInterviewSession()).thenReturn(testSession);
+        when(mockAnalysis.getScore()).thenReturn(5);
+        when(mockAnalysis.getTechnicalExpertiseScore()).thenReturn(5);
+        when(mockAnalysis.getCollaborationCommunicationScore()).thenReturn(4);
+        when(mockAnalysis.getProblemSolvingScore()).thenReturn(4);
+        when(mockAnalysis.getGrowthPotentialScore()).thenReturn(5);
+        when(mockAnalysis.getSummary()).thenReturn("최고의 요약");
+
+        when(interviewAnalysisRepository.findByInterviewSessionId(sessionId)).thenReturn(Optional.of(mockAnalysis));
+
+        InterviewAnalysisResponseDto response = interviewService.getInterviewAnalysis(sessionId);
+
+        assertThat(response.getId()).isEqualTo(1L);
+        assertThat(response.getInterviewSessionId()).isEqualTo(sessionId);
+        assertThat(response.getScore()).isEqualTo(5);
+        assertThat(response.getTechnicalExpertiseScore()).isEqualTo(5);
+        assertThat(response.getCollaborationCommunicationScore()).isEqualTo(4);
+        assertThat(response.getProblemSolvingScore()).isEqualTo(4);
+        assertThat(response.getGrowthPotentialScore()).isEqualTo(5);
+        assertThat(response.getSummary()).isEqualTo("최고의 요약");
+
+        verify(interviewAnalysisRepository).findByInterviewSessionId(sessionId);
+    }
+
+    @Test
+    @DisplayName("면접 분석 조회 실패 - 분석 결과 없음")
+    void getInterviewAnalysis_NotFound() {
+        Long sessionId = 1L;
+        when(interviewAnalysisRepository.findByInterviewSessionId(sessionId)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> interviewService.getInterviewAnalysis(sessionId));
+
+        verify(interviewAnalysisRepository).findByInterviewSessionId(sessionId);
+    }
 }
