@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import toock.backend.interview.domain.InterviewFieldCategory;
-import toock.backend.user.domain.Field; // User 도메인의 Field Enum 사용
 
 public class InterviewDto {
 

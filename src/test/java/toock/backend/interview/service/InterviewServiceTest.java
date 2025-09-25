@@ -16,7 +16,7 @@ import toock.backend.interview.dto.InterviewEvaluationResult;
 import toock.backend.interview.repository.InterviewAnalysisRepository;
 import toock.backend.interview.repository.InterviewQARepository;
 import toock.backend.interview.repository.InterviewSessionRepository;
-import toock.backend.user.repository.MemberRepository;
+import toock.backend.member.repository.MemberRepository;
 import toock.backend.company.repository.CompanyRepository;
 import toock.backend.company.repository.CompanyReviewRepository;
 
