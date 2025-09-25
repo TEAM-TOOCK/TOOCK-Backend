@@ -15,7 +15,6 @@ import toock.backend.infra.whisper.service.WhisperService;
 import toock.backend.interview.dto.InterviewAnalysisResponseDto;
 import toock.backend.interview.service.InterviewService;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,37 +31,6 @@ public class InterviewControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    // TestConfiguration에서 Mock 객체를 빈으로 제공하므로 @MockBean은 제거합니다.
-    // @MockBean
-    // private InterviewService interviewService;
-
-    // TestConfiguration에서 Mock 객체를 빈으로 제공하므로 @MockBean은 제거합니다。
-    // @MockBean
-    // private S3Service s3Service;
-
-    // TestConfiguration에서 Mock 객체를 빈으로 제공하므로 @MockBean은 제거합니다。
-    // @MockBean
-    // private WhisperService whisperService;
-
-    // InterviewService가 의존하는 빈들은 @SpringBootTest 환경에서 실제 빈으로 주입되거나,
-    // TestConfiguration에서 Mock으로 제공됩니다.
-    // @MockBean
-    // private MemberRepository memberRepository;
-    // @MockBean
-    // private CompanyRepository companyRepository;
-    // @MockBean
-    // private CompanyReviewRepository companyReviewRepository;
-    // @MockBean
-    // private InterviewSessionRepository interviewSessionRepository;
-    // @MockBean
-    // private InterviewQARepository interviewQARepository;
-    // @MockBean
-    // private InterviewAnalysisRepository interviewAnalysisRepository;
-    // @MockBean
-    // private PromptService promptService;
-    // @MockBean
-    // private GeminiService geminiService;
 
     @TestConfiguration
     static class TestConfig {
