@@ -214,6 +214,13 @@ public class InterviewService {
         return createAnalysisResponseDto(analysis, analysis.getInterviewSession());
     }
 
+    @Transactional(readOnly = true)
+    public InterviewAnalysisResponseDto getInterviewAnalysis(Long interviewSessionId) {
+        InterviewAnalysis analysis = interviewAnalysisRepository.findByInterviewSessionId(interviewSessionId)
+                .orElseThrow(() -> new IllegalArgumentException("면접 분석을 찾을 수 없습니다. ID: " + interviewSessionId));
+        return createAnalysisResponseDto(analysis, analysis.getInterviewSession());
+    }
+
     //markdown 표시가 있을경우 제거해줌.
     private String sanitizeJsonResponse(String rawResponse) {
         String sanitized = rawResponse.trim();

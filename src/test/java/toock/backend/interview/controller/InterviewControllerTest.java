@@ -18,9 +18,11 @@ import toock.backend.interview.service.InterviewService;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -86,5 +88,40 @@ public class InterviewControllerTest {
                 .andExpect(jsonPath("$.problemSolvingScore").value(4))
                 .andExpect(jsonPath("$.growthPotentialScore").value(3))
                 .andExpect(jsonPath("$.summary").value("좋은 요약"));
+    }
+
+    @Test
+    @DisplayName("면접 결과 조회 엔드포인트 성공")
+    void getInterviewResult_Success() throws Exception {
+        Long sessionId = 1L;
+        InterviewAnalysisResponseDto mockResponseDto = InterviewAnalysisResponseDto.builder()
+                .id(1L)
+                .interviewSessionId(sessionId)
+                .score(4)
+                .technicalExpertiseScore(5)
+                .collaborationCommunicationScore(4)
+                .problemSolvingScore(4)
+                .growthPotentialScore(3)
+                .summary("좋은 요약")
+                .build();
+
+        when(interviewService.getInterviewAnalysis(anyLong())).thenReturn(mockResponseDto);
+
+        mockMvc.perform(get("/interviews/results/{interviewSessionId}", sessionId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.code").value("SUCCESS"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andExpect(jsonPath("$.data.id").value(1L))
+                .andExpect(jsonPath("$.data.interviewSessionId").value(sessionId))
+                .andExpect(jsonPath("$.data.score").value(4))
+                .andExpect(jsonPath("$.data.technicalExpertiseScore").value(5))
+                .andExpect(jsonPath("$.data.collaborationCommunicationScore").value(4))
+                .andExpect(jsonPath("$.data.problemSolvingScore").value(4))
+                .andExpect(jsonPath("$.data.growthPotentialScore").value(3))
+                .andExpect(jsonPath("$.data.summary").value("좋은 요약"));
+
+        verify(interviewService).getInterviewAnalysis(sessionId);
     }
 }
