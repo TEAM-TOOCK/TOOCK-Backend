@@ -19,12 +19,12 @@ public class InterviewController {
     private final WhisperService whisperService;
 
     @PostMapping("/start")
-    public ResponseEntity<InterviewDto.StartResponse> startInterview(@RequestBody InterviewDto.StartRequest request) {
-        return ResponseEntity.ok(interviewService.startInterview(request));
+    public InterviewDto.StartResponse startInterview(@RequestBody InterviewDto.StartRequest request) {
+        return interviewService.startInterview(request);
     }
 
     @PostMapping("/next")
-    public ResponseEntity<InterviewDto.NextResponse> nextQuestion(
+    public InterviewDto.NextResponse nextQuestion(
             @RequestParam("interviewSessionId") Long interviewSessionId,
             @RequestParam("audioFile") MultipartFile audioFile) {
 
@@ -41,6 +41,6 @@ public class InterviewController {
         request.setS3Url(s3Url);
 
         // 4. 면접 로직을 처리하고 다음 질문을 받아 응답합니다.
-        return ResponseEntity.ok(interviewService.nextQuestion(request));
+        return interviewService.nextQuestion(request);
     }
 }
