@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import toock.backend.auth.dto.LoginResponseDto;
 import toock.backend.auth.service.AuthService;
+import toock.backend.global.dto.CommonResponseDto;
 
 @Slf4j
 @RestController
@@ -27,11 +28,11 @@ public class AuthController {
     private final OAuth2AuthorizedClientService authorizedClientService;
 
     @GetMapping("/google/callback")
-    public ResponseEntity<LoginResponseDto> googleCallback(OAuth2AuthenticationToken authentication) {
+    public ResponseEntity<CommonResponseDto<LoginResponseDto>> googleCallback(OAuth2AuthenticationToken authentication) {
         try {
             if (authentication == null) {
                 log.warn("OAuth2AuthenticationToken is null at callback");
-                return ResponseEntity.status(401).build();
+                return ResponseEntity.status(401).body(CommonResponseDto.fail("UNAUTHORIZED", "인증 정보가 없습니다."));
             }
             String clientRegistrationId = authentication.getAuthorizedClientRegistrationId();
             String name = authentication.getName();
@@ -48,10 +49,10 @@ public class AuthController {
             
             log.info("Google 로그인 성공: {}", response.getEmail());
             
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(CommonResponseDto.success(response));
         } catch (Exception e) {
             log.error("Google 로그인 처리 중 오류 발생", e);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(CommonResponseDto.fail("BAD_REQUEST", e.getMessage()));
         }
     }
 
