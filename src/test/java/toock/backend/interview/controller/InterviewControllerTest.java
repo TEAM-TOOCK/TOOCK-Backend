@@ -49,10 +49,6 @@ public class InterviewControllerTest {
             return mock(WhisperService.class);
         }
         
-        @Bean
-        public ObjectMapper objectMapper() {
-            return new ObjectMapper();
-        }
     }
 
     @Autowired
