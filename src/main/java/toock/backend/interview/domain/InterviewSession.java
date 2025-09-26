@@ -6,8 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import toock.backend.company.domain.Company;
-import toock.backend.user.domain.Field;
-import toock.backend.user.domain.Member;
+import toock.backend.member.domain.Member;
 
 import java.time.OffsetDateTime;
 

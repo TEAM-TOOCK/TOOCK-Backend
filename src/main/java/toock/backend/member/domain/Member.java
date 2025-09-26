@@ -1,4 +1,4 @@
-package toock.backend.user.domain;
+package toock.backend.member.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

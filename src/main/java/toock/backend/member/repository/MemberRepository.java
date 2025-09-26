@@ -1,10 +1,10 @@
-package toock.backend.user.repository;
+package toock.backend.member.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
 import org.springframework.stereotype.Repository;
-import toock.backend.user.domain.Member;
+import toock.backend.member.domain.Member;
 
 import java.util.Optional;
 

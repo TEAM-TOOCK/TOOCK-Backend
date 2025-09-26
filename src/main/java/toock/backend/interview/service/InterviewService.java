@@ -12,7 +12,6 @@ import toock.backend.company.domain.Company;
 import toock.backend.company.domain.CompanyReview;
 import toock.backend.company.repository.CompanyRepository;
 import toock.backend.company.repository.CompanyReviewRepository;
-import toock.backend.interview.domain.InterviewFieldCategory;
 import toock.backend.interview.domain.InterviewQA;
 import toock.backend.interview.domain.InterviewAnalysis;
 import toock.backend.interview.domain.InterviewSession;
@@ -22,17 +21,14 @@ import toock.backend.interview.dto.InterviewEvaluationResult;
 import toock.backend.interview.repository.InterviewQARepository;
 import toock.backend.interview.repository.InterviewSessionRepository;
 import toock.backend.interview.repository.InterviewAnalysisRepository;
-import toock.backend.user.domain.Member;
-import toock.backend.user.repository.MemberRepository;
+import toock.backend.member.domain.Member;
+import toock.backend.member.repository.MemberRepository;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static toock.backend.interview.domain.InterviewFieldCategory.*;
 
 @Slf4j
 @Service
