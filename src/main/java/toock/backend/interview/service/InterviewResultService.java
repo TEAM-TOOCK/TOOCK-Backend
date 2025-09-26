@@ -63,9 +63,12 @@ public class InterviewResultService {
                              (problemSolvingScore != null ? problemSolvingScore : 0) +
                              (growthPotentialScore != null ? growthPotentialScore : 0);
 
-        // TODO: 프롬프트로 분석 레코드에 생성하자
-        String strengths = null;
-        String improvements = null;
+        List<String> strengths = (analysis.getStrengths() != null && !analysis.getStrengths().isEmpty())
+                               ? Arrays.asList(analysis.getStrengths().split("///"))
+                               : List.of();
+        List<String> improvements = (analysis.getImprovements() != null && !analysis.getImprovements().isEmpty())
+                                  ? Arrays.asList(analysis.getImprovements().split("///"))
+                                  : List.of();
 
         return InterviewResultResponseDto.builder()
                 .interviewAnalysisId(analysis.getId())
