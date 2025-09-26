@@ -2,16 +2,16 @@ name: Build and Deploy to EC2
 
 on:
   push:
-    branches: [ "main" ]  # main 브랜치 푸시 시 실행
+    branches: [ "main" ]
   workflow_dispatch:
 
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: toock
-  PROJECT_NAME: toock-backend
+  PROJECT_NAME: tock-backend
   CODE_DEPLOY_APPLICATION_NAME: toock-code-deploy
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: toock-server
-  RESOURCE_PATH: ./src/main/resources/application-dev.yml  # Dev 환경 설정 파일만 주입 대상
+  RESOURCE_PATH: ./src/main/resources/application-dev.yml
 
 jobs:
   build-project:
@@ -20,70 +20,107 @@ jobs:
       contents: read
 
     steps:
-      # 1. 저장소 체크아웃
+      # 0) Checkout & JDK & gradle 권한
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. JDK 17 설정 (Temurin)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '17'
 
-      # 3. Gradle 실행 권한 부여
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # 4. application-dev.yml에 GitHub Secrets 주입
+      # 시크릿 치환 (토큰 문법 명시: #{NAME}#)
       - name: Inject secrets into application-dev.yml
         uses: cschleiden/replace-tokens@v1
         with:
           files: ${{ env.RESOURCE_PATH }}
+          tokenPrefix: '#{'
+          tokenSuffix: '}#'
         env:
           DATASOURCE_URL: ${{ secrets.DATASOURCE_URL }}
           DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
           DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
-          GEMINI_API_KEY : ${{ secrets.GEMINI_API_KEY }}
-          AWS_ACCESS_KEY : ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_KEY : ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_BUCKET_NAME : ${{ env.S3_BUCKET_NAME }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_BUCKET_NAME: ${{ env.S3_BUCKET_NAME }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
-      # 5. Gradle 빌드 (테스트 제외, 캐시 사용)
-      - name: Build with Gradle
-        uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5
+      # ===== (1) 치환 결과 출력 =====
+      - name: (1) Show rendered application-dev.yml
+        run: |
+          echo "================ application-dev.yml (rendered) ================"
+          sed -n '1,200p' ${{ env.RESOURCE_PATH }}
+
+      # 빌드
+      - name: Build with Gradle (skip tests)
+        uses: gradle/actions/setup-gradle@v3
         with:
           arguments: clean build -x test
 
-      # 6. ZIP 파일 생성 (커밋 해시로 파일명 지정)
+      # ===== (2) 빌드 산출물 확인 =====
+      - name: (2) List build outputs
+        run: |
+          echo "================ build/libs ================"
+          ls -al build/libs || true
+          file build/libs/* || true
+
+      # ZIP 생성
       - name: Make zip file
         run: zip -qq -r ./$GITHUB_SHA.zip .
 
-      # 7. AWS 인증 (Secrets 이용)
+      # ===== (2-추가) ZIP 내용에 핵심 파일 포함 확인 =====
+      - name: (2b) Inspect zip contents
+        run: |
+          unzip -l ./$GITHUB_SHA.zip | grep -E 'appspec\.yml|scripts/|build/libs/.*\.jar' || true
+
+      # AWS 자격 증명
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # 8. S3 버킷에 업로드
+      # S3 업로드
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+        run: aws s3 cp --region $AWS_REGION ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
 
-      # 9. AWS CodeDeploy로 배포
-      - name: Deploy with AWS CodeDeploy
+      # ===== (3) CodeDeploy 트리거 & (4) 완료까지 대기 =====
+      - name: (3) Deploy with AWS CodeDeploy
+        id: cd
         run: |
-          aws deploy create-deployment \
-            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+          DEPLOY_ID=$(aws deploy create-deployment \
+            --application-name "$CODE_DEPLOY_APPLICATION_NAME" \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
-            --s3-location bucket=${{ env.S3_BUCKET_NAME }},key=${{ env.PROJECT_NAME }}/$GITHUB_SHA.zip,bundleType=zip
+            --deployment-group-name "$CODE_DEPLOY_DEPLOYMENT_GROUP_NAME" \
+            --s3-location bucket=$S3_BUCKET_NAME,key=$PROJECT_NAME/$GITHUB_SHA.zip,bundleType=zip \
+            --query "deploymentId" --output text)
+          echo "deployment_id=$DEPLOY_ID" >> $GITHUB_OUTPUT
+          echo "DeploymentId: $DEPLOY_ID"
 
-      # 10. S3 접근 테스트 (디버그용)
+      - name: (4) Wait for deployment to finish
+        run: |
+          set -e
+          DEPLOY_ID="${{ steps.cd.outputs.deployment_id }}"
+          for i in {1..60}; do
+            STATUS=$(aws deploy get-deployment --deployment-id "$DEPLOY_ID" --query "deploymentInfo.status" --output text)
+            echo "Deployment status: $STATUS"
+            if [ "$STATUS" = "Succeeded" ]; then exit 0; fi
+            if [ "$STATUS" = "Failed" ] || [ "$STATUS" = "Stopped" ]; then
+              echo "Deployment failed"; exit 1
+            fi
+            sleep 10
+          done
+          echo "Timeout waiting for deployment"; exit 1
+
+      # 디버그용: S3 접속 확인 (선택)
       - name: Test AWS credentials
-        run: aws s3 ls
+        run: aws s3 ls s3://$S3_BUCKET_NAME/$PROJECT_NAME/ | tail -n 5

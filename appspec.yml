@@ -17,5 +17,5 @@ permissions:            # 배포된 디렉토리 권한 설정
 hooks:                  # 배포 후 실행할 스크립트 설정
   ApplicationStart:     # 파일 배치 후 애플리케이션 시작 단계
     - location: scripts/deploy.sh
-      timeout: 60
+      timeout: 300
       runas: ubuntu
