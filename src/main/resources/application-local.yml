@@ -41,6 +41,9 @@ whisper:
   upload:
     dir: uploads/audio
 
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}
 # JWT 설정
 jwt:
   secret: ${JWT_SECRET}

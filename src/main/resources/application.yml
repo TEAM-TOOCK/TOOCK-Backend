@@ -19,9 +19,7 @@ spring:
         # CloudFormation을 사용하지 않을 경우 false로 설정
         auto: false
 
-gemini:
-  api:
-    key: ${GEMINI_API_KEY}
+
 
 
 
