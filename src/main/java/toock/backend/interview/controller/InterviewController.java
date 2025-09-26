@@ -11,6 +11,8 @@ import toock.backend.interview.dto.InterviewDto;
 import toock.backend.interview.dto.InterviewAnalysisResponseDto;
 import toock.backend.interview.service.InterviewService;
 import toock.backend.global.dto.CommonResponseDto;
+import toock.backend.interview.dto.InterviewResultResponseDto;
+import toock.backend.interview.service.InterviewResultService;
 
 @RestController
 @RequestMapping("/interviews")
@@ -20,6 +22,7 @@ public class InterviewController {
     private final InterviewService interviewService;
     private final S3Service s3Service;
     private final WhisperService whisperService;
+    private final InterviewResultService interviewResultService; // InterviewResultService 주입
 
     @PostMapping("/start")
     public ResponseEntity<InterviewDto.StartResponse> startInterview(@RequestBody InterviewDto.StartRequest request, @AuthenticationPrincipal Long memberId) {
@@ -59,5 +62,11 @@ public class InterviewController {
     public ResponseEntity<CommonResponseDto<InterviewAnalysisResponseDto>> getInterviewResult(@PathVariable Long interviewSessionId) {
         InterviewAnalysisResponseDto analysis = interviewService.getInterviewAnalysis(interviewSessionId);
         return ResponseEntity.ok(CommonResponseDto.success(analysis));
+    }
+
+    @GetMapping("/results/details/{interviewSessionId}")
+    public ResponseEntity<CommonResponseDto<InterviewResultResponseDto>> getInterviewResultDetails(@PathVariable Long interviewSessionId) {
+        InterviewResultResponseDto resultDetails = interviewResultService.getInterviewResultDetails(interviewSessionId);
+        return ResponseEntity.ok(CommonResponseDto.success(resultDetails));
     }
 }
