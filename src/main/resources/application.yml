@@ -5,19 +5,7 @@ spring:
   profiles:
     active: local
 
-  cloud:
-    aws:
-      credentials:
-        access-key: ${AWS_ACCESS_KEY}
-        secret-key: ${AWS_SECRET_KEY}
-      region:
-        static: ap-northeast-2
-      s3:
-        # 사용할 S3 버킷 이름을 입력하세요.
-        bucket: ${AWS_BUCKET_NAME}
-      stack:
-        # CloudFormation을 사용하지 않을 경우 false로 설정
-        auto: false
+
 
 
 
