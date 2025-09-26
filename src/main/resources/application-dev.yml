@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: #{DATASOURCE_URL}
-    username: #{DATASOURCE_USERNAME}
-    password: #{DATASOURCE_PASSWORD}
+    url: #{DATASOURCE_URL}#
+    username: #{DATASOURCE_USERNAME}#
+    password: #{DATASOURCE_PASSWORD}#
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -13,8 +13,8 @@ spring:
       client:
         registration:
           google:
-            client-id: #{GOOGLE_CLIENT_ID}
-            client-secret: #{GOOGLE_CLIENT_SECRET}
+            client-id: #{GOOGLE_CLIENT_ID}#
+            client-secret: #{GOOGLE_CLIENT_SECRET}#
             scope:
               - email
               - profile
@@ -32,7 +32,7 @@ spring:
 
 openai:
   api:
-    key: #{OPENAI_API_KEY}
+    key: #{OPENAI_API_KEY}#
     timeout: 60
 
 whisper:
@@ -41,10 +41,10 @@ whisper:
 
 gemini:
   api:
-    key: #GEMINI_API_KEY
+    key: #{GEMINI_API_KEY}#
 
 # JWT 설정
 jwt:
-  secret: #{JWT_SECRET}
+  secret: #{JWT_SECRET}#
   expiration: 86400000
 
