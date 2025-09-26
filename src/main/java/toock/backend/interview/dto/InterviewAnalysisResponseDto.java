@@ -16,4 +16,6 @@ public class InterviewAnalysisResponseDto {
     private Integer problemSolvingScore;
     private Integer growthPotentialScore;
     private String summary;
+    private String strengths;
+    private String improvements;
 }

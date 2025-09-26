@@ -57,6 +57,8 @@ public class InterviewResultServiceTest {
         when(mockInterviewAnalysis.getCollaborationCommunicationScore()).thenReturn(4);
         when(mockInterviewAnalysis.getProblemSolvingScore()).thenReturn(3);
         when(mockInterviewAnalysis.getGrowthPotentialScore()).thenReturn(2);
+        when(mockInterviewAnalysis.getStrengths()).thenReturn("강점1///강점2///강점3");
+        when(mockInterviewAnalysis.getImprovements()).thenReturn("약점1///약점2///약점3");
 
         InterviewQA mockInterviewQA1 = mock(InterviewQA.class);
         when(mockInterviewQA1.getId()).thenReturn(100L);
@@ -92,8 +94,8 @@ public class InterviewResultServiceTest {
         assertThat(result.getProblemSolvingScore()).isEqualTo(3);
         assertThat(result.getGrowthPotentialScore()).isEqualTo(2);
         assertThat(result.getAiFeedback()).isEqualTo("Summary Test");
-        assertThat(result.getStrengths()).isNull();
-        assertThat(result.getImprovements()).isNull();
+        assertThat(result.getStrengths()).containsExactly("강점1", "강점2", "강점3");
+        assertThat(result.getImprovements()).containsExactly("약점1", "약점2", "약점3");
         assertThat(result.getQaRecords()).hasSize(2);
 
         assertThat(result.getQaRecords().get(0).getInterviewQAId()).isEqualTo(100L);

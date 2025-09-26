@@ -38,14 +38,22 @@ public class InterviewAnalysis {
     @Column(columnDefinition = "LONGTEXT")
     private String summary;
 
+    @Column(columnDefinition = "TEXT")
+    private String strengths;
+
+    @Column(columnDefinition = "TEXT")
+    private String improvements;
+
     @Builder
     public InterviewAnalysis(InterviewSession interviewSession,
-                            Integer score,
-                            Integer technicalExpertiseScore,
-                            Integer collaborationCommunicationScore,
-                            Integer problemSolvingScore,
-                            Integer growthPotentialScore,
-                            String summary) {
+                             Integer score,
+                             Integer technicalExpertiseScore,
+                             Integer collaborationCommunicationScore,
+                             Integer problemSolvingScore,
+                             Integer growthPotentialScore,
+                             String summary,
+                             String strengths,
+                             String improvements) {
         this.interviewSession = interviewSession;
         this.score = score;
         this.technicalExpertiseScore = technicalExpertiseScore;
@@ -53,6 +61,26 @@ public class InterviewAnalysis {
         this.problemSolvingScore = problemSolvingScore;
         this.growthPotentialScore = growthPotentialScore;
         this.summary = summary;
+        this.strengths = strengths;
+        this.improvements = improvements;
+    }
+
+    public void updateAnalysis(Integer score,
+                               Integer technicalExpertiseScore,
+                               Integer collaborationCommunicationScore,
+                               Integer problemSolvingScore,
+                               Integer growthPotentialScore,
+                               String summary,
+                               String strengths,
+                               String improvements) {
+        this.score = score;
+        this.technicalExpertiseScore = technicalExpertiseScore;
+        this.collaborationCommunicationScore = collaborationCommunicationScore;
+        this.problemSolvingScore = problemSolvingScore;
+        this.growthPotentialScore = growthPotentialScore;
+        this.summary = summary;
+        this.strengths = strengths;
+        this.improvements = improvements;
     }
 }
 

@@ -19,6 +19,6 @@ public class InterviewResultResponseDto {
     private Integer growthPotentialScore;
     private String aiFeedback;
     private List<QAItemDto> qaRecords;
-    private String strengths;
-    private String improvements;
+    private List<String> strengths;
+    private List<String> improvements;
 }

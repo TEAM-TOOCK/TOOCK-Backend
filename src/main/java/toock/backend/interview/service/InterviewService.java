@@ -193,8 +193,12 @@ public class InterviewService {
         }
 
         String summaryToSave = evaluationResult.getSummary();
+        String strengthsToSave = evaluationResult.getStrengths();
+        String improvementsToSave = evaluationResult.getImprovements();
         
         log.info("저장될 summary 길이: {}, 내용: {}", summaryToSave != null ? summaryToSave.length() : 0, summaryToSave);
+        log.info("저장될 strengths 길이: {}, 내용: {}", strengthsToSave != null ? strengthsToSave.length() : 0, strengthsToSave);
+        log.info("저장될 improvements 길이: {}, 내용: {}", improvementsToSave != null ? improvementsToSave.length() : 0, improvementsToSave);
 
         InterviewAnalysis analysis = InterviewAnalysis.builder()
                 .interviewSession(session)
@@ -204,6 +208,8 @@ public class InterviewService {
                 .problemSolvingScore(evaluationResult.getProblemSolvingScore())
                 .growthPotentialScore(evaluationResult.getGrowthPotentialScore())
                 .summary(summaryToSave)
+                .strengths(strengthsToSave)
+                .improvements(improvementsToSave)
                 .build();
         interviewAnalysisRepository.save(analysis);
 
@@ -284,6 +290,8 @@ public class InterviewService {
                 .problemSolvingScore(analysis.getProblemSolvingScore())
                 .growthPotentialScore(analysis.getGrowthPotentialScore())
                 .summary(analysis.getSummary())
+                .strengths(analysis.getStrengths())
+                .improvements(analysis.getImprovements())
                 .build();
     }
 }
