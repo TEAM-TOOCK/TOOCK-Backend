@@ -10,12 +10,11 @@ import org.springframework.stereotype.Service;
 import toock.backend.auth.dto.GoogleUserInfo;
 import toock.backend.auth.dto.LoginResponseDto;
 import toock.backend.auth.util.JwtUtil;
-import toock.backend.user.domain.Field;
-import toock.backend.user.domain.Member;
-import toock.backend.user.repository.MemberRepository;
+import toock.backend.member.domain.Field;
+import toock.backend.member.domain.Member;
+import toock.backend.member.repository.MemberRepository;
 
 import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
 @Service
