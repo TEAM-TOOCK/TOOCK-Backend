@@ -52,6 +52,9 @@ jobs:
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI }}
+          OAUTH2_SUCCESS_URL: ${{ secrets.OAUTH2_SUCCESS_URL }}
+          OAUTH2_FAILURE_URL: ${{ secrets.OAUTH2_FAILURE_URL }}
 
       # 5. Gradle 빌드 (테스트 제외, 캐시 사용)
       - name: Build with Gradle
