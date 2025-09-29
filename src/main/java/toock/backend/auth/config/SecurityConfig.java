@@ -1,6 +1,7 @@
 package toock.backend.auth.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +21,12 @@ public class SecurityConfig {
     private final GoogleOAuth2Service googleOAuth2Service;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Value("${app.oauth2.success-url}")
+    private String oauth2SuccessUrl;
+
+    @Value("${app.oauth2.failure-url}")
+    private String oauth2FailureUrl;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -38,8 +45,8 @@ public class SecurityConfig {
                 .userInfoEndpoint(userInfo -> userInfo
                     .userService(googleOAuth2Service)
                 )
-                .defaultSuccessUrl("/auth/google/callback", true)
-                .failureUrl("/auth/google/login?error=true")
+                .defaultSuccessUrl(oauth2SuccessUrl, true)
+                .failureUrl(oauth2FailureUrl)
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
