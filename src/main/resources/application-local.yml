@@ -45,3 +45,8 @@ whisper:
 jwt:
   secret: ${JWT_SECRET}
   expiration: 86400000  # 24시간
+
+app:
+  oauth2:
+    success-url: ${OAUTH2_SUCCESS_URL}
+    failure-url: ${OAUTH2_FAILURE_URL}
