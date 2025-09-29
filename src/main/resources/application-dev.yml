@@ -64,6 +64,6 @@ jwt:
 
 app:
   oauth2:
-    success-url: #${OAUTH2_SUCCESS_URL}#
-    failure-url: #${OAUTH2_FAILURE_URL}#
+    success-url: #{OAUTH2_SUCCESS_URL}#
+    failure-url: #{OAUTH2_FAILURE_URL}#
 
