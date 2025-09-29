@@ -62,3 +62,8 @@ jwt:
   secret: test-jwt-secret
   expiration: 86400000
 
+app:
+  oauth2:
+    success-url: http://localhost:8080/auth/google/callback
+    failure-url: http://localhost:8080/auth/google/login?error=true
+
