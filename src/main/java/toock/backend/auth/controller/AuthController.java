@@ -56,6 +56,12 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/google/login")
+    public ResponseEntity<CommonResponseDto<Void>> oauth2LoginFailure() {
+        log.warn("OAuth2 로그인 실패");
+        return ResponseEntity.status(401).body(CommonResponseDto.fail("UNAUTHORIZED", "로그인에 실패했습니다."));
+    }
+
     @GetMapping("/user/me")
     public ResponseEntity<String> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
