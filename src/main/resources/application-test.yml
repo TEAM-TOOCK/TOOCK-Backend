@@ -64,6 +64,6 @@ jwt:
 
 app:
   oauth2:
-    success-url: http://localhost:8080/auth/google/callback
+    success-url: https://toock-frontend.vercel.app/dashboard
     failure-url: http://localhost:8080/auth/google/login?error=true
 

@@ -12,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import toock.backend.auth.service.GoogleOAuth2Service;
 import toock.backend.auth.filter.JwtAuthenticationFilter;
+import toock.backend.auth.config.CustomOAuth2AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -20,9 +21,7 @@ public class SecurityConfig {
 
     private final GoogleOAuth2Service googleOAuth2Service;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    @Value("${app.oauth2.success-url}")
-    private String oauth2SuccessUrl;
+    private final CustomOAuth2AuthenticationSuccessHandler customOAuth2AuthenticationSuccessHandler;
 
     @Value("${app.oauth2.failure-url}")
     private String oauth2FailureUrl;
@@ -46,7 +45,7 @@ public class SecurityConfig {
                 .userInfoEndpoint(userInfo -> userInfo
                     .userService(googleOAuth2Service)
                 )
-                .defaultSuccessUrl(oauth2SuccessUrl, true)
+                .successHandler(customOAuth2AuthenticationSuccessHandler)
                 .failureUrl(oauth2FailureUrl)
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

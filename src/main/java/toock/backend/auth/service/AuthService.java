@@ -26,8 +26,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
 
-    public LoginResponseDto processGoogleLogin(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oauth2User = oAuth2UserService.loadUser(userRequest);
+    public LoginResponseDto processGoogleLogin(OAuth2User oauth2User) {
         Map<String, Object> attributes = oauth2User.getAttributes();
         
         GoogleUserInfo googleUserInfo = GoogleUserInfo.builder()
