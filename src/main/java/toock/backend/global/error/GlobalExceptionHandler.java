@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import toock.backend.global.dto.CommonResponseDto;
 import toock.backend.infra.whisper.exception.WhisperException;
+import toock.backend.member.error.MemberException;
 
 @Slf4j
 @RestControllerAdvice
@@ -27,6 +28,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CommonResponseDto<Void>> handleWhisper(WhisperException ex, HttpServletRequest request) {
         ErrorCode code = ex.getErrorCode() != null ? ex.getErrorCode() : ErrorCode.WHISPER_TRANSCRIBE_FAILED;
         log.error("Whisper error({}): {}", code.name(), ex.getMessage(), ex);
+        return ResponseEntity.status(code.getHttpStatus())
+                .body(CommonResponseDto.fail(code.name(), code.getMessage()));
+    }
+
+    @ExceptionHandler(MemberException.class)
+    public ResponseEntity<CommonResponseDto<Void>> handleMember(MemberException ex) {
+        ErrorCode code = ex.getErrorCode();
+        log.warn("Member error({}): {}", code.name(), ex.getMessage());
         return ResponseEntity.status(code.getHttpStatus())
                 .body(CommonResponseDto.fail(code.name(), code.getMessage()));
     }

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import toock.backend.interview.domain.InterviewFieldCategory;
+import toock.backend.member.domain.Field;
 
 public class InterviewDto {
 
@@ -11,7 +12,8 @@ public class InterviewDto {
     @Getter @Setter @NoArgsConstructor
     public static class StartRequest {
         private String companyName;
-        private InterviewFieldCategory field; // User의 Field가 아닌 InterviewFieldCategory 사용
+        private InterviewFieldCategory fieldCategory;
+        private Field field;
     }
 
     // 면접 시작 응답 DTO

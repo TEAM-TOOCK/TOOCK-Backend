@@ -61,7 +61,7 @@ public class AuthService {
                 .email(googleUserInfo.getEmail())
                 .name(googleUserInfo.getName())
                 .username(generateUsername(googleUserInfo.getEmail()))
-                .field(Field.DEFAULT) // 기본값 설정 (추후 설정으로 변경)
+                .field(Field.DEFAULT)
                 .googleId(googleUserInfo.getId())
                 .build();
         

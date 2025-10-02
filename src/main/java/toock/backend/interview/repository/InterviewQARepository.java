@@ -1,6 +1,8 @@
 package toock.backend.interview.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import toock.backend.interview.domain.InterviewQA;
 
 import java.util.List;
@@ -16,4 +18,7 @@ public interface InterviewQARepository extends JpaRepository<InterviewQA, Long> 
 
     // 세션과 주요 질문 순서로 다음 '주요 질문'(`followUpOrder = 0`)을 조회
     Optional<InterviewQA> findByInterviewSession_IdAndQuestionOrderAndFollowUpOrder(Long interviewSessionId, Integer questionOrder, Integer followUpOrder);
+
+    @Query("SELECT COUNT(iqa) FROM InterviewQA iqa WHERE iqa.interviewSession.id = :sessionId")
+    Long countByInterviewSessionId(@Param("sessionId") Long sessionId);
 }

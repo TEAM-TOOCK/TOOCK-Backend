@@ -16,6 +16,9 @@ public enum ErrorCode {
     WHISPER_TRANSCRIBE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "음성 변환 처리 중 오류가 발생했습니다."),
     WHISPER_RESPONSE_PARSING_FAILED(HttpStatus.BAD_GATEWAY, "Whisper 응답 파싱에 실패했습니다."),
 
+    // Member
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."),
+    DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다."),
     ;
 
     private final HttpStatus httpStatus;

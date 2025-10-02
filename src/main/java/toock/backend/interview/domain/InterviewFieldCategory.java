@@ -5,9 +5,6 @@ import lombok.Getter;
 
 import java.util.stream.Stream;
 
-/**
- * 면접 필터링을 위한 3대 직군 카테고리
- */
 @Getter
 public enum InterviewFieldCategory {
     DEVELOPMENT("개발"),
@@ -21,10 +18,21 @@ public enum InterviewFieldCategory {
     }
 
     @JsonCreator
-    public static InterviewFieldCategory from(String dbValue) {
-        return Stream.of(InterviewFieldCategory.values())
-                .filter(category -> category.getDbValue().equals(dbValue))
-                .findFirst()
-                .orElse(null); // 일치하는 값이 없으면 null 반환 (또는 예외 발생)
+    public static InterviewFieldCategory from(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        for (InterviewFieldCategory category : values()) {
+            if (category.getDbValue().equalsIgnoreCase(value)) {
+                return category;
+            }
+        }
+
+        try {
+            return InterviewFieldCategory.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

@@ -9,4 +9,3 @@ public enum Field {
     AI,
     SECURITY
 }
-
