@@ -61,27 +61,28 @@ public class InterviewService {
         InterviewSession session = InterviewSession.builder()
                 .member(member)
                 .company(company)
+                .fieldCategory(request.getFieldCategory())
                 .field(request.getField())
                 .status("IN_PROGRESS")
                 .startedAt(OffsetDateTime.now())
                 .build();
         interviewSessionRepository.save(session);
 
-        // 1. Enum의 이름을 문자열로 변환
-        String fieldCategory = request.getField().getDbValue();
 
-        // 2. 변환된 문자열로 데이터베이스에서 직접 면접 후기를 조회합니다. (랜덤으로 N개 조회)
+        String fieldCategoryStr = request.getFieldCategory().getDbValue();
+
         List<CompanyReview> reviews = companyReviewRepository.findRandomByCompanyAndField(
                 company.getName(),
-                fieldCategory,
+                fieldCategoryStr,
                 PageRequest.of(0, MAX_REVIEW_SAMPLES)
         );
 
 
         log.info("reviews: {}", reviews.toString());
 
+
         String contextData = formatReviewsForPrompt(reviews);
-        String mainQuestionsPrompt = promptService.createMainQuestionsPrompt(contextData, fieldCategory);
+        String mainQuestionsPrompt = promptService.createMainQuestionsPrompt(contextData, fieldCategoryStr);
         String rawResponse = geminiService.generateQuestion(mainQuestionsPrompt);
 
         String cleanJson = sanitizeJsonResponse(rawResponse);

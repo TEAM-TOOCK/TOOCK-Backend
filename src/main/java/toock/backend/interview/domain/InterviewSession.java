@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import toock.backend.company.domain.Company;
+import toock.backend.member.domain.Field;
 import toock.backend.member.domain.Member;
 
 import java.time.OffsetDateTime;
@@ -29,7 +30,12 @@ public class InterviewSession {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
-    private InterviewFieldCategory field;
+    private InterviewFieldCategory fieldCategory;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    private Field field;
+
 
     @Column(length = 50)
     private String status;
@@ -42,13 +48,15 @@ public class InterviewSession {
 
     @Builder
     public InterviewSession(Member member,
-                           Company company,
-                            InterviewFieldCategory field,
-                           String status,
-                           OffsetDateTime startedAt,
-                           OffsetDateTime completedAt) {
+                            Company company,
+                            InterviewFieldCategory fieldCategory,
+                            Field field,
+                            String status,
+                            OffsetDateTime startedAt,
+                            OffsetDateTime completedAt) {
         this.member = member;
         this.company = company;
+        this.fieldCategory = fieldCategory;
         this.field = field;
         this.status = status;
         this.startedAt = startedAt;
