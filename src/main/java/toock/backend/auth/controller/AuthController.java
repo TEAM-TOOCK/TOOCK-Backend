@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import toock.backend.auth.dto.LoginResponseDto;
+import toock.backend.auth.dto.TestLoginRequestDto;
 import toock.backend.auth.service.AuthService;
 import toock.backend.global.dto.CommonResponseDto;
 
@@ -69,5 +70,17 @@ public class AuthController {
             return ResponseEntity.ok("현재 인증된 사용자 ID: " + authentication.getName());
         }
         return ResponseEntity.ok("인증되지 않은 사용자");
+    }
+
+    @PostMapping("/test-login")
+    public ResponseEntity<CommonResponseDto<LoginResponseDto>> testLogin(@RequestBody TestLoginRequestDto request) {
+        try {
+            LoginResponseDto response = authService.testLogin(request);
+            log.info("Test login successful for email: {}", request.getEmail());
+            return ResponseEntity.ok(CommonResponseDto.success(response));
+        } catch (Exception e) {
+            log.error("Test login failed for email: {}", request.getEmail(), e);
+            return ResponseEntity.badRequest().body(CommonResponseDto.fail("BAD_REQUEST", e.getMessage()));
+        }
     }
 }
