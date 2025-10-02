@@ -4,13 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import toock.backend.global.error.ErrorCode;
 import toock.backend.interview.domain.InterviewAnalysis;
 import toock.backend.interview.domain.InterviewSession;
 import toock.backend.interview.repository.InterviewAnalysisRepository;
 import toock.backend.interview.repository.InterviewSessionRepository;
 import toock.backend.member.domain.Member;
 import toock.backend.member.dto.MemberNicknameResponseDto;
+import toock.backend.member.dto.MemberProfileResponseDto;
+import toock.backend.member.dto.MemberProfileUpdateRequestDto;
 import toock.backend.member.dto.MemberStatisticsResponseDto;
+import toock.backend.member.error.MemberException;
 import toock.backend.member.repository.MemberRepository;
 
 import java.time.DayOfWeek;
@@ -31,7 +35,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberNicknameResponseDto getMemberNickname(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. ID: " + memberId));
+                .orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
 
         return MemberNicknameResponseDto.builder()
                 .nickname(member.getName()) // Member 엔티티의 name 필드를 반환
@@ -74,5 +78,19 @@ public class MemberService {
                 .bestScore(bestScore)
                 .interviewsThisWeek(interviewsThisWeek)
                 .build();
+    }
+
+    @Transactional
+    public void updateProfile(Long memberId, MemberProfileUpdateRequestDto requestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
+        member.updateProfile(requestDto.getField(), requestDto.getInterviewFieldCategory());
+    }
+
+    @Transactional(readOnly = true)
+    public MemberProfileResponseDto getMemberProfile(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. ID: " + memberId)); // 실제로는 MemberException 사용 권장
+        return MemberProfileResponseDto.from(member);
     }
 }

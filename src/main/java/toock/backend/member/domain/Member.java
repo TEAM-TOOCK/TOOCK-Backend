@@ -5,9 +5,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import toock.backend.interview.domain.InterviewFieldCategory;
 
+@Slf4j
 @Getter
 @Entity
 @Where(clause = "status = 'ACTIVATED'")
@@ -32,23 +35,32 @@ public class Member {
     @Column(nullable = false)
     private Status status;
 
-    // 소셜 로그인 전용: 패스워드 제거
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Field field;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private InterviewFieldCategory interviewFieldCategory;
+
 
     @Column(length = 255)
     private String googleId;
 
     @Builder
-    public Member(String email, String name, String username, Field field, String googleId) {
+    public Member(String email, String name, String username, Field field, String googleId, InterviewFieldCategory interviewFieldCategory) {
         this.email = email;
         this.name = name;
         this.username = username;
         this.field = (field != null) ? field : Field.DEFAULT;
         this.googleId = googleId;
         this.status = Status.ACTIVATED;
+        this.interviewFieldCategory = interviewFieldCategory;
+    }
+
+    public void updateProfile(Field field, InterviewFieldCategory interviewFieldCategory) {
+        this.field = field;
+        this.interviewFieldCategory = interviewFieldCategory;
     }
 }
 
