@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
+                .loginProcessingUrl("/login/oauth2/code/*")
                 .userInfoEndpoint(userInfo -> userInfo
                     .userService(googleOAuth2Service)
                 )
