@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import toock.backend.auth.dto.GoogleUserInfo;
 import toock.backend.auth.dto.LoginResponseDto;
+import toock.backend.auth.dto.TestLoginRequestDto;
 import toock.backend.auth.util.JwtUtil;
 import toock.backend.member.domain.Field;
 import toock.backend.member.domain.Member;
@@ -83,5 +84,21 @@ public class AuthService {
         }
         
         return username;
+    }
+
+    public LoginResponseDto testLogin(TestLoginRequestDto request) {
+        String email = request.getEmail();
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        String token = jwtUtil.generateToken(member.getEmail(), member.getId());
+
+        return LoginResponseDto.builder()
+                .accessToken(token)
+                .tokenType("Bearer")
+                .memberId(member.getId())
+                .email(member.getEmail())
+                .name(member.getName())
+                .build();
     }
 }
