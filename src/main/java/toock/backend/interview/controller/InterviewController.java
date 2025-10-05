@@ -25,8 +25,12 @@ public class InterviewController {
     private final InterviewResultService interviewResultService; // InterviewResultService 주입
 
     @PostMapping("/start")
-    public ResponseEntity<InterviewDto.StartResponse> startInterview(@RequestBody InterviewDto.StartRequest request, @AuthenticationPrincipal Long memberId) {
-        return ResponseEntity.ok(interviewService.startInterview(request,memberId));
+    public ResponseEntity<CommonResponseDto<InterviewDto.StartResponse>> startInterview(
+            @RequestBody InterviewDto.StartRequest request,
+            @AuthenticationPrincipal Long memberId) {
+        InterviewDto.StartResponse response = interviewService.startInterview(request, memberId);
+
+        return ResponseEntity.ok(CommonResponseDto.success(response));
     }
 
     @PostMapping("/next")
