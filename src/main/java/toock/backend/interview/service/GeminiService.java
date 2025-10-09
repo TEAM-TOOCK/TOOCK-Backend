@@ -32,7 +32,7 @@ public class GeminiService {
             GeminiDto.Response response = webClient.post()
                     .uri(uriBuilder -> uriBuilder
                             // 최신 모델인 gemini-1.5-flash 사용
-                            .path("/v1beta/models/gemini-2.5-flash:generateContent")
+                            .path("/v1beta/models/gemini-2.0-flash:generateContent")
                             .queryParam("key", apiKey)
                             .build())
                     .contentType(MediaType.APPLICATION_JSON)
