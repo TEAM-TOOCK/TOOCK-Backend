@@ -34,6 +34,8 @@ public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthentic
         // AuthService를 통해 JWT 토큰을 포함한 LoginResponseDto를 받음
         LoginResponseDto loginResponse = authService.processGoogleLogin(oauth2User);
 
+        log.info("loginResponse: {}", loginResponse);
+
         String targetUrl = UriComponentsBuilder.fromUriString(oauth2SuccessUrl)
                 .queryParam("accessToken", loginResponse.getAccessToken())
                 .build().toUriString();
