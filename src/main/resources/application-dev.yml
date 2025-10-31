@@ -51,7 +51,7 @@ openai:
 
 whisper:
   upload:
-    dir: uploads/audio
+    dir: /home/ubuntu/TOOCK-Backend/uploads/audio
 
 gemini:
   api:
