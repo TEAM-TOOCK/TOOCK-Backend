@@ -8,7 +8,7 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: toock
-  PROJECT_NAME: tock-backend
+  PROJECT_NAME: toock-backend
   CODE_DEPLOY_APPLICATION_NAME: toock-code-deploy
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: toock-server
   RESOURCE_PATH: ./src/main/resources/application-dev.yml
